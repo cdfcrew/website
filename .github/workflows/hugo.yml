@@ -99,6 +99,9 @@ jobs:
       VERSION: ${{ needs.build.outputs.version }}
       OUTPUT_FOLDER: local.chart-output
     steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
       - name: prepare distilled chart
         run: |
           mkdir -p ${{ env.OUTPUT_FOLDER }}
