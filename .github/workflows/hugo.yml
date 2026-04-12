@@ -2,7 +2,10 @@ name: hugo
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+    tags:
+      - "v*"
   workflow_dispatch:
 
 concurrency:
@@ -24,9 +27,15 @@ jobs:
           VERSION=$(docker run --rm -v "$(pwd):/repo" gittools/gitversion /repo /output json | jq -r '.SemVer')
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
+      - name: Define image name
+        shell: bash
+        run: |
+          image=ghcr.io/${{ github.repository }}:${{ env.VERSION }}
+          echo "IMAGE=$image" >> $GITHUB_ENV
+
       - name: Build website
         run: |
-          docker build -t ${{ github.repository}}:${{ env.VERSION }} .
+          docker build -t ${{ env.IMAGE }} .
 
       - name: Cache Trivy database
         uses: actions/cache@v5
@@ -45,7 +54,7 @@ jobs:
           touch $RESULT_FILE
           mkdir -p "$TRIVY_CACHE_DIR"
 
-          image=${{ github.repository }}:${{ env.VERSION }}
+          image=${{ env.IMAGE }}
 
           echo "<details open><summary>Scan results for ${image}</summary>" >> $RESULT_FILE
           docker run \
@@ -70,5 +79,5 @@ jobs:
       - name: Publish image to GitHub Container Registry
         if: github.event_name != 'pull_request'
         run: |
-          image=${{ github.repository }}:${{ env.VERSION }}
+          image=${{ env.IMAGE }}
           docker push ghcr.io/${image}
