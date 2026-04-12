@@ -1,0 +1,44 @@
+apiVersion: v2
+name: soccer-teams-calendar
+description: Soccer Teams Calendar Helm chart
+type: application
+
+# Semver for the chart itself. Bump automatically on chart changes.
+version: 0.0.0
+
+# Application version (the version of the app this chart deploys).
+appVersion: 0.0.0
+
+# Minimum supported Kubernetes version (optional)
+kubeVersion: ">=1.20.0-0"
+
+# Icon shown in registries / UIs
+icon: https://raw.githubusercontent.com/fabiolune/soccer-teams-calendar-chart/refs/heads/main/logo.png?token=GHSAT0AAAAAADVOYPJP3Y5OCRT47VXBU3M42OYYNMA
+
+# Project homepage
+home: https://github.com/fabiolune/soccer-teams-calendar-chart
+
+# Source repositories for the chart and the application
+sources:
+  - https://github.com/cdfcrew/website
+
+# Helpful keywords for discovery in registries
+keywords:
+  - hugo
+  - static
+  - website
+
+# Chart maintainers
+maintainers:
+  - name: cdfcrew
+    email: admin@cdfcrew.it
+    url: https://cdfcrew.it
+
+# Empty dependencies placeholder (fill if this chart depends on others)
+dependencies: []
+
+# Annotations for registries (Artifact Hub, etc.)
+annotations:
+  keywords: "hugo,static,website"
+  providers: "cdfcrew"
+  chart-schema: "v2"

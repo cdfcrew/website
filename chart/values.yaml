@@ -1,0 +1,35 @@
+## @param nameOverride Override the name of the deployed resources
+## @param fullnameOverride Override the full name of the deployed resources
+nameOverride: ""
+fullnameOverride: ""
+
+## @param registryAddress The address of the container registry to pull images from
+## @param imagePullSecret The name of the Kubernetes secret containing credentials for the container registry
+registryAddress: ghcr.io/cdfcrew
+imagePullSecret:
+
+## @section HTTP configuration
+## @param http.hostname The hostname for the application's HTTP ingress
+## @param http.prefix The URL prefix for the application's HTTP ingress
+## @param http.tlsSecret The name of the Kubernetes secret containing TLS certificates for the HTTP ingress
+## @param http.ingressClass The class of the Kubernetes ingress controller to use (e.g., "nginx", "traefik")
+http:
+  hostname: ""
+  tlsSecret: ""
+  ingressClass: "nginx"
+
+ingress:
+  annotations: {}
+  labels: {}
+
+deployment:
+  replicas: 1
+  labels: {}
+  annotations: {}
+  resources:
+    limits:
+      cpu: "100m"
+      memory: "128Mi"
+    requests:
+      cpu: "50m"
+      memory: "64Mi"
