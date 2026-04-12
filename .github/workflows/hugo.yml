@@ -19,7 +19,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
         with:
-          fetch-depth: 0
+          fetch-depth: 0\
 
       - name: Set version
         shell: bash
@@ -79,5 +79,4 @@ jobs:
       - name: Publish image to GitHub Container Registry
         if: github.event_name != 'pull_request'
         run: |
-          image=${{ env.IMAGE }}
-          docker push ghcr.io/${image}
+          docker push ${{ env.IMAGE }}
