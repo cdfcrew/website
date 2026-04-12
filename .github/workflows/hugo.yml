@@ -9,10 +9,6 @@ concurrency:
   group: ci-${{ github.repository }}-${{ github.ref_name }}
   cancel-in-progress: true
 
-concurrency:
-  group: pages
-  cancel-in-progress: true
-
 jobs:
   build:
     runs-on: ubuntu-latest
