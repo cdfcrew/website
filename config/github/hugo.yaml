@@ -1,0 +1,4 @@
+# Override for GitHub Pages preview builds. Replace baseURL with your Pages URL.
+baseURL: https://example.github.io/website/
+params:
+  preview_site: true

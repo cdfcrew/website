@@ -1,0 +1,32 @@
+members:
+  - name: Fabio
+    initials: F
+    hue: 154
+    skills:
+      - architecture
+      - development
+      - quality
+      - automation
+      - devops
+  - name: Alessandro
+    initials: A
+    hue: 198
+    skills:
+      - development
+      - devops
+      - automation
+  - name: Lollo
+    initials: L
+    hue: 214
+    skills:
+      - development
+      - devops
+      - automation
+      - architecture
+  - name: Davide
+    initials: D
+    hue: 172
+    skills:
+      - development
+      - devops
+      - automation

@@ -1,0 +1,22 @@
+{{ define "main" }}
+  <article class="container team-page">
+    <header class="team-page__head">
+      <h1>{{ .Title }}</h1>
+      <p class="lede">
+        Small crew, senior habits. We keep bios light for now. Here is how we tend to show up on a build.
+      </p>
+    </header>
+
+    <ul class="team-grid" role="list">
+      {{- range hugo.Data.team.members }}
+        <li class="team-card">
+          {{- partial "avatar.html" . }}
+          <div class="team-card__body">
+            <h2 class="team-card__name">{{ .name }}</h2>
+            <p class="team-card__skills">{{ delimit .skills ", " }}</p>
+          </div>
+        </li>
+      {{- end }}
+    </ul>
+  </article>
+{{ end }}

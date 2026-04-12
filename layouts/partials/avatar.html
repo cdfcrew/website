@@ -1,0 +1,5 @@
+{{- $hue := .hue | default 154 -}}
+<div class="avatar" style="--hue: {{ $hue }}">
+  <span class="avatar__initials" aria-hidden="true">{{ .initials }}</span>
+  <span class="visually-hidden">{{ .name }}</span>
+</div>

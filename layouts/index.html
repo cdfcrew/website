@@ -1,0 +1,31 @@
+{{ define "main" }}
+  <section class="hero">
+    <div class="container hero__inner">
+      <p class="eyebrow">Independent developers · Web · Startups</p>
+      <h1 class="hero__title">{{ site.Title }}</h1>
+      <p class="hero__lead">{{ site.Params.hero_tagline }}</p>
+      <p class="hero__note">Selected work: <strong>coming soon</strong>.</p>
+      <div class="hero__actions">
+        <a class="button button--primary" href="{{ "/contact/" | relLangURL }}">Get in touch</a>
+        <a class="button button--ghost" href="{{ "/how-we-work/" | relLangURL }}">How we work</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="container split">
+      <div>
+        <h2 class="h2">What we do</h2>
+        <p class="lede">
+          We build quality web software with clear ownership: design for change, automate the boring
+          parts, and keep production calm.
+        </p>
+      </div>
+      <ul class="checks">
+        <li>Architecture that matches the problem, not the hype cycle.</li>
+        <li>Automation and DevOps practices that reduce toil and risk.</li>
+        <li>Testing and review habits that protect your roadmap.</li>
+      </ul>
+    </div>
+  </section>
+{{ end }}

@@ -1,0 +1,51 @@
+baseURL: http://localhost:1313/
+title: CDF Crew
+languageCode: en-US
+defaultContentLanguage: en
+enableRobotsTXT: true
+disableKinds:
+  - taxonomy
+  - term
+
+params:
+  description: >-
+    Independent developers building quality web software for teams who want
+    architecture, automation, and maintainability from day one.
+  contact_email: admin@cdfcrew.it
+  hero_tagline: >-
+    We build web software you can grow into, with clear architecture, steady
+    automation, and a stubborn commitment to quality.
+  preview_site: false
+
+menus:
+  main:
+    - identifier: home
+      name: Home
+      url: /
+      weight: 10
+    - identifier: how
+      name: How we work
+      url: /how-we-work/
+      weight: 20
+    - identifier: team
+      name: Team
+      url: /team/
+      weight: 30
+    - identifier: contact
+      name: Contact
+      url: /contact/
+      weight: 40
+    - identifier: privacy
+      name: Privacy
+      url: /privacy/
+      weight: 50
+
+markup:
+  goldmark:
+    renderer:
+      unsafe: false
+
+outputs:
+  home:
+    - HTML
+    - RSS
