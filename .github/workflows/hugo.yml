@@ -107,7 +107,7 @@ jobs:
           mkdir -p ${{ env.OUTPUT_FOLDER }}
           cp chart/Chart.yaml ${{ env.OUTPUT_FOLDER }}
           cp chart/values.yaml ${{ env.OUTPUT_FOLDER }}
-          cp -r chart/templates ${{ env.OUTPUT_FOLDER }}S
+          cp -r chart/templates ${{ env.OUTPUT_FOLDER }}
           sed -i 's/version: .*/version: ${{ env.VERSION }}/g' ${{ env.OUTPUT_FOLDER }}/Chart.yaml
           sed -i 's/appVersion: .*/appVersion: ${{ env.VERSION }}/g' ${{ env.OUTPUT_FOLDER }}/Chart.yaml
 
