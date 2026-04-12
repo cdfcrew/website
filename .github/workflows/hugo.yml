@@ -112,7 +112,7 @@ jobs:
           sed -i 's/appVersion: .*/appVersion: ${{ env.VERSION }}/g' ${{ env.OUTPUT_FOLDER }}/Chart.yaml
 
       - name: push chart to branch
-        uses: crazy-max/ghaction-github-pages@v4.1.0
+        uses: crazy-max/ghaction-github-pages@v5.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -121,7 +121,7 @@ jobs:
 
       - name: push chart to branch
         if: needs.build.outputs.is-stable == true
-        uses: crazy-max/ghaction-github-pages@v4.1.0
+        uses: crazy-max/ghaction-github-pages@v5.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
