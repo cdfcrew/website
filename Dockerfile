@@ -10,7 +10,6 @@ COPY . .
 RUN hugo --minify --environment production
 
 FROM nginxinc/nginx-unprivileged:1.26-alpine
-RUN apk upgrade --no-cache
 
 COPY --from=hugo /src/public /usr/share/nginx/html
 COPY deploy/nginx-default.conf /etc/nginx/conf.d/default.conf
