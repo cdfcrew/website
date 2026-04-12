@@ -5,10 +5,9 @@ on:
     branches: [main]
   workflow_dispatch:
 
-permissions:
-  contents: read
-  pages: write
-  id-token: write
+concurrency:
+  group: ci-${{ github.repository }}-${{ github.ref_name }}
+  cancel-in-progress: true
 
 concurrency:
   group: pages
@@ -18,28 +17,62 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Hugo
-        uses: peaceiris/actions-hugo@v3
+      - name: Checkout
+        uses: actions/checkout@v6
         with:
-          hugo-version: "0.160.1"
-          extended: false
+          fetch-depth: 0
 
-      - name: Build (GitHub preview)
-        run: hugo --minify --environment github
+      - name: Set version
+        shell: bash
+        run: |
+          VERSION=$(docker run --rm -v "$(pwd):/repo" gittools/gitversion /repo /output json | jq -r '.SemVer')
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+      - name: Build website
+        run: |
+          docker build -t ${{ github.repository}}:${{ env.VERSION }} .
+
+      - name: Cache Trivy database
+        uses: actions/cache@v5
         with:
-          path: public
+          path: ${{ github.workspace }}/.trivy-cache
+          key: ${{ runner.os }}-trivy-${{ github.ref_name }}
+          restore-keys: |
+            ${{ runner.os }}-trivy-
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
-    steps:
-      - id: deploy
-        uses: actions/deploy-pages@v4
+      - name: Scan images with Trivy
+        env:
+          trivy_version: 0.69.3
+        run: |
+          RESULT_FILE=local.trivy-result.txt
+          TRIVY_CACHE_DIR="${{ github.workspace }}/.trivy-cache"
+          touch $RESULT_FILE
+          mkdir -p "$TRIVY_CACHE_DIR"
+
+          image=${{ github.repository }}:${{ env.VERSION }}
+
+          echo "<details open><summary>Scan results for ${image}</summary>" >> $RESULT_FILE
+          docker run \
+            -v /var/run/docker.sock:/var/run/docker.sock \
+            -v "$(pwd):/work" -w /work \
+            -v "$TRIVY_CACHE_DIR:/trivy-cache" \
+            aquasec/trivy:${trivy_version} --cache-dir "/trivy-cache" image \
+            --no-progress \
+            --exit-code 0 \
+            ${image} | tee -a $RESULT_FILE
+          echo "</details>" >> $RESULT_FILE
+          cat $RESULT_FILE >> $GITHUB_STEP_SUMMARY
+
+      - name: Login to GitHub container registry
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Publish image to GitHub Container Registry
+        if: github.event_name != 'pull_request'
+        run: |
+          image=${{ github.repository }}:${{ env.VERSION }}
+          docker push ghcr.io/${image}
