@@ -9,9 +9,5 @@ WORKDIR /src
 COPY . .
 RUN hugo --minify --environment production
 
-FROM nginxinc/nginx-unprivileged:1.26-alpine
-
-COPY --from=hugo /src/public /usr/share/nginx/html
-COPY deploy/nginx-default.conf /etc/nginx/conf.d/default.conf
-EXPOSE 8080
-CMD ["nginx", "-g", "daemon off;"]
+FROM lipanski/docker-static-website:2.6.0
+COPY --from=hugo /src/public /home/static
