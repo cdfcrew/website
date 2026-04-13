@@ -1,0 +1,31 @@
+{{- $_ := required "Hostname is required (parameter http.hostname)" .Values.http.hostname }}
+{{- $_ := required "Ingress class is required when hostname is set (parameter http.ingressClass)" .Values.http.ingressClass }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    {{- if .Values.ingress.annotations }}
+    {{- include "common.tplvalues.render" ( dict "value" .Values.ingress.annotations "context" $ ) | nindent 4 }}
+    {{- end }}
+  labels:
+    app: {{ include "common.names.fullname" . }}
+  name: {{ include "common.names.fullname" . }}
+spec:
+  ingressClassName: {{ .Values.http.ingressClass }}
+  rules:
+  - host: {{ .Values.http.hostname }}
+    http:
+      paths:
+      - pathType: Prefix
+        path: /
+        backend:
+          service:
+            name: {{ include "common.names.fullname" . }}
+            port:
+              name: http
+  {{ if .Values.http.tlsSecret }}
+  tls:
+  - hosts:
+    - {{ .Values.http.hostname }}
+    secretName: {{ .Values.http.tlsSecret }}
+  {{ end }}
