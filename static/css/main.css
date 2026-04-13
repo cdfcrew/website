@@ -404,43 +404,179 @@ img {
   letter-spacing: -0.03em;
 }
 
-.team-grid {
+/* ── orbit chart (crew centre, skills on ring) ── */
+.orbit {
+  --ring: min(44vw, 17.5rem);
+  position: relative;
+  width: calc(var(--ring) * 2 + 8rem);
+  height: calc(var(--ring) * 2 + 8rem);
+  max-width: 100%;
+  margin: 2rem auto 3rem;
+  aspect-ratio: 1;
+}
+
+/* centre: overlapping crew “cell” */
+.orbit__core {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  z-index: 2;
+  width: min(20rem, 78%);
+  padding: 1.35rem 1.1rem 1.15rem;
+  border-radius: calc(var(--radius) + 6px);
+  border: 1px solid color-mix(in oklab, var(--accent), var(--border) 55%);
+  background:
+    radial-gradient(ellipse 85% 70% at 50% 0%, color-mix(in oklab, var(--accent), transparent 82%), transparent 55%),
+    radial-gradient(circle at 50% 120%, color-mix(in oklab, var(--accent-dim), transparent 88%), transparent 45%),
+    var(--bg-elevated);
+  box-shadow: var(--shadow), 0 0 0 1px color-mix(in oklab, white, transparent 96%) inset;
+  text-align: center;
+}
+
+.orbit__crew {
   list-style: none;
   margin: 0;
-  padding: 1rem 0 3rem;
-  display: grid;
-  gap: 1rem;
-  grid-template-columns: 1fr;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 0.15rem 0.35rem;
+  max-width: 17rem;
+  margin-inline: auto;
 }
 
-@media (min-width: 40rem) {
-  .team-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-.team-card {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 1rem;
+.orbit__member {
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  padding: 1rem 1.1rem;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--bg-elevated);
-  box-shadow: var(--shadow);
+  gap: 0.35rem;
+  margin: 0 -0.2rem;
+  transition: transform 0.2s ease, z-index 0s;
+  position: relative;
 }
 
-.team-card__name {
-  margin: 0 0 0.35rem;
-  font-size: var(--step-2);
-  letter-spacing: -0.02em;
+.orbit__member:hover,
+.orbit__member:focus-within {
+  transform: translateY(-3px) scale(1.04);
+  z-index: 3;
 }
 
-.team-card__skills {
-  margin: 0;
-  color: var(--muted);
+.orbit__member .avatar {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.85rem;
+}
+
+.orbit__member .avatar__initials {
+  font-size: 1.05rem;
+}
+
+.orbit__member-name {
+  font-weight: 650;
   font-size: var(--step--1);
+  line-height: 1.1;
+  color: color-mix(in oklab, var(--text), var(--muted) 12%);
+  max-width: 5.5rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.orbit__skill-tag {
+  display: inline-block;
+  padding: 0.38rem 0.8rem;
+  font-size: var(--step--1);
+  font-weight: 650;
+  border-radius: 999px;
+  border: 1px solid color-mix(in oklab, var(--accent), var(--border) 70%);
+  background: color-mix(in oklab, var(--surface), var(--accent) 6%);
+  color: var(--text);
+  white-space: nowrap;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+  cursor: default;
+  transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.orbit__node--skill:hover .orbit__skill-tag {
+  border-color: color-mix(in oklab, var(--accent), var(--border) 35%);
+  background: color-mix(in oklab, var(--surface), var(--accent) 14%);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.28);
+}
+
+/* ring connector (decorative) */
+.orbit::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  width: calc(var(--ring) * 2);
+  height: calc(var(--ring) * 2);
+  border-radius: 50%;
+  border: 1px dashed var(--border);
+  pointer-events: none;
+}
+
+/* member nodes placed on the ring via --i / --total */
+.orbit__node {
+  --angle: calc(360deg / var(--total) * var(--i) - 90deg);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  transform:
+    rotate(var(--angle))
+    translateX(var(--ring))
+    rotate(calc(-1 * var(--angle)));
+}
+
+.orbit__node .avatar {
+  width: 3.2rem;
+  height: 3.2rem;
+  border-radius: 0.9rem;
+  flex: none;
+}
+
+.orbit__node .avatar__initials {
+  font-size: 1.1rem;
+}
+
+/* small screens: shrink the ring */
+@media (max-width: 30rem) {
+  .orbit {
+    --ring: 8rem;
+  }
+  .orbit__core {
+    width: min(92%, 15rem);
+    padding: 1rem 0.65rem 0.85rem;
+  }
+  .orbit__crew {
+    max-width: 13rem;
+    gap: 0.05rem 0.15rem;
+  }
+  .orbit__member {
+    margin: 0 -0.35rem;
+  }
+  .orbit__member .avatar {
+    width: 2.45rem;
+    height: 2.45rem;
+  }
+  .orbit__member .avatar__initials {
+    font-size: 0.88rem;
+  }
+  .orbit__member-name {
+    font-size: 0.72rem;
+    max-width: 4.2rem;
+  }
+  .orbit__skill-tag {
+    font-size: 0.72rem;
+    padding: 0.28rem 0.55rem;
+  }
 }
 
 .avatar {

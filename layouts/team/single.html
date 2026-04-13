@@ -1,22 +1,58 @@
 {{ define "main" }}
+  {{- $members := hugo.Data.team.members -}}
+  {{- $skills := slice -}}
+  {{- $skillLabels := dict
+      "devops" "DevOps"
+      "architecture" "Architecture"
+      "development" "Development"
+      "quality" "Quality"
+      "automation" "Automation"
+  -}}
+  {{- $skillOwners := dict -}}
+  {{- range $members }}
+    {{- $person := .name -}}
+    {{- range .skills }}
+      {{- $skill := . -}}
+      {{- $cur := index $skillOwners $skill | default "" -}}
+      {{- $next := cond (eq $cur "") $person (printf "%s, %s" $cur $person) -}}
+      {{- $skillOwners = merge $skillOwners (dict $skill $next) -}}
+      {{- if not (in $skills $skill) }}
+        {{- $skills = $skills | append $skill -}}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+
   <article class="container team-page">
     <header class="team-page__head">
       <h1>{{ .Title }}</h1>
       <p class="lede">
-        Small crew, senior habits. We keep bios light for now. Here is how we tend to show up on a build.
+        Small crew, senior habits. Skills orbit the people who actually ship with them.
       </p>
     </header>
 
-    <ul class="team-grid" role="list">
-      {{- range hugo.Data.team.members }}
-        <li class="team-card">
-          {{- partial "avatar.html" . }}
-          <div class="team-card__body">
-            <h2 class="team-card__name">{{ .name }}</h2>
-            <p class="team-card__skills">{{ delimit .skills ", " }}</p>
-          </div>
-        </li>
+    <div class="orbit" aria-label="Team members and skills">
+      {{/* ── centre: crew cluster ── */}}
+      <div class="orbit__core">
+        <ul class="orbit__crew" role="list">
+          {{- range $members }}
+            <li class="orbit__member">
+              {{- partial "avatar.html" (merge . (dict "hideSrName" true)) }}
+              <span class="orbit__member-name">{{ .name }}</span>
+            </li>
+          {{- end }}
+        </ul>
+      </div>
+
+      {{/* ── ring: deduped skills (tooltip = who practices it) ── */}}
+      {{- $total := len $skills -}}
+      {{- range $i, $sk := $skills }}
+        {{- $label := index $skillLabels $sk | default ($sk | humanize) -}}
+        {{- $owners := index $skillOwners $sk | default "" -}}
+        {{- $tip := printf "%s — %s" $label $owners -}}
+        <div class="orbit__node orbit__node--skill" style="--i: {{ $i }}; --total: {{ $total }}">
+          <span class="orbit__skill-tag" title="{{ $tip }}">{{ $label }}</span>
+        </div>
       {{- end }}
-    </ul>
+    </div>
   </article>
 {{ end }}
